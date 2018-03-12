@@ -39,7 +39,6 @@ export default class Recommended extends React.Component {
     this.setState({recommendedView: false})
   }
 
-
   render() {
     let restName = this.state.recomendedRest
     restName = restName.split("-")

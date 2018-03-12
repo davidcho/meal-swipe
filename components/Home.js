@@ -4,9 +4,7 @@ import SwipeView from './SwipeView'
 import config from '../config'
 
 
-
 export default class Home extends React.Component {
-
 
   constructor(props) {
     super(props);
@@ -16,27 +14,15 @@ export default class Home extends React.Component {
     }
 
     this.onPressButton = this.onPressButton.bind(this)
-    // this.onPressHome = this.onPressHome.bind(this)
-    // this.swipeLeft = this.swipeLeft.bind(this)
-    // this.onSwipe = this.onSwipe.bind(this)
   }
 
-
   onPressButton = () => {
- 
     this.setState(
       Object.assign({}, this.state, {
         swipeView: true,
       }
       ))
   }
-
-  // onPressHome = () => {
-  //   this.setState(
-  //     Object.assign({}, this.state, { swipeView: false })
-  //   )
-  //   console.log('pressed')
-  // }
 
 
   render() {
@@ -73,7 +59,6 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'maroon',
-    // fontWeight: 'bold',
     fontSize: 30,
     textAlign: 'center'
   },
@@ -102,5 +87,4 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOpacity: 0.25,
   }
-
 });
