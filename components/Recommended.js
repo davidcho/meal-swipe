@@ -3,13 +3,8 @@ import { StyleSheet, Text, View, Button, Image, Linking } from 'react-native';
 import SwipeView from './SwipeView'
 import Home from './Home'
 import config from '../config'
-// import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
-
-// import GestureRecognizer, { swipeDirections } from 'react-native-swipe-container'
-// import type { GestureState } from 'react-native-swipe-container'
 
 export default class Recommended extends React.Component {
-
 
   constructor(props) {
     super(props);
@@ -46,18 +41,14 @@ export default class Recommended extends React.Component {
 
 
   render() {
-    console.log("this.props: ", this.props)
-    console.log("info: ", this.state.recommendedRestInfo["image_url"])
     let restName = this.state.recomendedRest
     restName = restName.split("-")
-    restNameNoCity = restName.slice(0, restName.length - 1).join(" ")
-    restNameUrl = restName.slice(0, restName.length - 2).join("+")
+    let restNameNoCity = restName.slice(0, restName.length - 1).join(" ")
+    let restNameUrl = restName.slice(0, restName.length - 2).join("+")
     
-    console.log(restNameUrl)
     if (this.state.recommendedView && this.state.recommendedRestInfo["image_url"]) {
-      console.log(this.state.recommendedRestInfo["categories"])
-      restAddressUrl = (this.state.recommendedRestInfo["location"]["address1"]).split(" ").join("+")
-      restNameTitle = this.state.recommendedRestInfo["name"] + " (" + this.state.recommendedRestInfo["price"] + ")"
+      let restAddressUrl = (this.state.recommendedRestInfo["location"]["address1"]).split(" ").join("+")
+      let restNameTitle = this.state.recommendedRestInfo["name"] + " (" + this.state.recommendedRestInfo["price"] + ")"
       let category = this.state.recommendedRestInfo["categories"][0]["title"].split("")
       category = category.filter(letter => {
         return (letter !== "(" &&   letter!== ")")
@@ -112,7 +103,6 @@ export default class Recommended extends React.Component {
   }    
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -165,5 +155,4 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOpacity: 0.25,
   }
-
 });

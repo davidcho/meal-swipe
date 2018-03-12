@@ -4,8 +4,6 @@ import SwipeCards from 'react-native-swipe-cards';
 import Home from './Home'
 import Recommended from './Recommended'
 import config from '../config'
-// import GestureRecognizer, { swipeDirections } from 'react-native-swipe-container'
-// import { Swiper } from 'react-native-deck-swiper' 
 
 
 class Card extends React.Component {
@@ -39,12 +37,9 @@ class NoMoreCards extends React.Component {
     this.setState({
       swipeView: false
     })
-  
-
   }
 
   render() {
-    console.log("no more cards")
     if (this.state.swipeView) {
       return (
         <View>
@@ -63,7 +58,6 @@ class NoMoreCards extends React.Component {
         <Home />
       )
     }
-
   }
 }
 
@@ -79,9 +73,6 @@ export default class SwipeView extends React.Component {
       recommendRest: "",
       firstTime: this.props.firstTime
     };
-
-    this.firstTime = true
-
     this.handleYup = this.handleYup.bind(this)
     this.handleNope = this.handleNope.bind(this)
 
@@ -106,7 +97,6 @@ export default class SwipeView extends React.Component {
         //   [responseJsonRandom[i], responseJsonRandom[j]] = [responseJsonRandom[j], responseJsonRandom[i]];
         // }
         // let responseJsonRandomFetch = responseJsonRandom.slice()
-
         let responseJsonRandomFetch = (responseJson["businesses"].slice(1, 4)).concat(responseJson["businesses"].slice(6, 9))
         // let responseJsonRandomFetch = (responseJson["businesses"].slice(29, 30)).concat((responseJson["businesses"].slice(1, 2).concat((responseJson["businesses"].slice(3,4).concat((responseJson["businesses"].slice(5,7).concat((responseJson["businesses"].slice(10,11).concat((responseJson["businesses"].slice(11, 12).concat((responseJson["businesses"].slice(13, 14).concat((responseJson["businesses"].slice(16, 17).concat((responseJson["businesses"].slice(19,20).concat((responseJson["businesses"].slice(23, 25)).concat((responseJson["businesses"].slice(26, 28))
         // let responseJsonRandomFetch = responseJson["businesses"].filter(rest => {
@@ -128,7 +118,6 @@ export default class SwipeView extends React.Component {
                       url: responseJson["photos"][i],
                       rest: responseJson["id"]
                     });
-
                     let listOfPics = restaurantPics.slice()
                     for (let i = listOfPics.length - 1; i > 0; i--) {
                       let j = Math.floor(Math.random() * (i + 1));
@@ -142,12 +131,10 @@ export default class SwipeView extends React.Component {
       })
   }
 
-
   handleYup(card) {
     if (this.state.restaurantsLiked[card.rest]) {
       restName = card.rest.split("-").join(" ")
       restName = restName.slice(0, restName.length - 10)
-      console.log('we think you might like', restName)
       this.setState({
         recommend: true,
         recommendRest: card.rest,
@@ -160,12 +147,9 @@ export default class SwipeView extends React.Component {
       });
       this.setState(Object.assign({}, this.state, {firstTime: false, listOfRestaurantPics: newListOfPics}))
       this.state.firstTime = false
-      console.log(this.state.firstTime)
-
     }
   }
   handleNope(card) {
-    
     let newListOfPics = this.state.listOfRestaurantPics.slice()
     newListOfPics = newListOfPics.filter(function( obj ) {
       return obj.url !== card.url;
@@ -175,14 +159,12 @@ export default class SwipeView extends React.Component {
   }
 
   render() {
-    console.log("list: ", this.state.listOfRestaurantPics.length)
     let pictures = this.state.listOfRestaurantPics
     if (this.state.swipeView & !this.state.recommend && !this.state.firstTime) {
       return (
         <View style={styles.container}>
           {this.state && this.state.listOfRestaurantPics.length ?
             <View style={styles.container}>
-              
               <SwipeCards
                 cards={this.state.listOfRestaurantPics}
                 renderCard={(cardData) => <Card {...cardData} />}
@@ -218,7 +200,6 @@ export default class SwipeView extends React.Component {
           }
         </View>
       )
-
     } else if (this.state.recommend) {
       return (
         <Recommended props={this.state.recommendRest} list={this.state.listOfRest} />
@@ -233,11 +214,8 @@ export default class SwipeView extends React.Component {
   }
 }
 
-
 const styles = StyleSheet.create({
   card: {
-    // justifyContent: 'center',
-    // alignItems: 'center',
     width: 350,
     height: 350,
     margin: 0
@@ -267,14 +245,12 @@ const styles = StyleSheet.create({
     color: 'maroon',
     fontWeight: 'bold',
     fontSize: 30,
-    // fontFamily: 'vincHand'
   },
   textRight: {
     color: '#4CAF50',
     fontWeight: 'bold',
     fontSize: 30,
     position: 'absolute',
-    // padding: 20,
     top: 90,
     borderRadius: 5,
     right: 0,
@@ -284,23 +260,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 30,
     position: 'absolute',
-    // padding: 20,
     bottom: 90,
     borderRadius: 5,
     left: 0,
   }
 })
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
 
-//     shadowRadius: 10,
-//     shadowOpacity: 0.25,
-//   }
-
-
-// });
