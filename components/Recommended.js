@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, Image, Linking } from 'react-native';
-import SwipeView from './SwipeView'
-import Home from './Home'
-import config from '../config'
+import SwipeView from './SwipeView';
+import Home from './Home';
+import config from '../config';
+import Geolocation from 'react-native-geolocation-service';
 
 export default class Recommended extends React.Component {
 
@@ -19,6 +20,7 @@ export default class Recommended extends React.Component {
   }
 
   componentDidMount() {
+    
     let key = config.MY_KEY
     fetch(('https://api.yelp.com/v3/businesses/' + this.state.recomendedRest), {
       method: 'GET',

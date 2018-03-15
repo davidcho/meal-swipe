@@ -71,7 +71,9 @@ export default class SwipeView extends React.Component {
       restaurantsLiked: {},
       recommend: false,
       recommendRest: "",
-      firstTime: this.props.firstTime
+      firstTime: this.props.firstTime,
+      latitude: "",
+      longitude: ""
     };
     this.handleYup = this.handleYup.bind(this)
     this.handleNope = this.handleNope.bind(this)
@@ -79,29 +81,30 @@ export default class SwipeView extends React.Component {
   }
 
   componentDidMount() {
-    let restaurantPics = []
-    let key = config.MY_KEY
-    fetch('https://api.yelp.com/v3/businesses/search?term=restaurants&sort_by=rating&latitude=40.741895&longitude=-73.989308&radius=1600&limit=30', {
-      method: 'GET',
-      headers: {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        console.log(position)
+        let latitude = position.coords.latitude
+        let longitude = position.coords.longitude
+        let restaurantPics = []
+        let key = config.MY_KEY
+        fetch('https://api.yelp.com/v3/businesses/search?term=restaurants&sort_by=rating&latitude=' + latitude + '&longitude=' + longitude + '&radius=1600&limit=30', {
+        method: 'GET',
+        headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         Authorization: key
-      }
-    })
-    .then((response) => response.json())
+        }
+        })
+      .then((response) => response.json())
       .then((responseJson) => {
-        // let responseJsonRandom = responseJson["businesses"].slice()
-        // for (var i = responseJsonRandom.length - 1; i > 0; i-- ) {
-        //   let j = Math.floor(Math.random() * (i + 1));
-        //   [responseJsonRandom[i], responseJsonRandom[j]] = [responseJsonRandom[j], responseJsonRandom[i]];
-        // }
-        // let responseJsonRandomFetch = responseJsonRandom.slice()
-        let responseJsonRandomFetch = (responseJson["businesses"].slice(1, 4)).concat(responseJson["businesses"].slice(6, 9))
-        // let responseJsonRandomFetch = (responseJson["businesses"].slice(29, 30)).concat((responseJson["businesses"].slice(1, 2).concat((responseJson["businesses"].slice(3,4).concat((responseJson["businesses"].slice(5,7).concat((responseJson["businesses"].slice(10,11).concat((responseJson["businesses"].slice(11, 12).concat((responseJson["businesses"].slice(13, 14).concat((responseJson["businesses"].slice(16, 17).concat((responseJson["businesses"].slice(19,20).concat((responseJson["businesses"].slice(23, 25)).concat((responseJson["businesses"].slice(26, 28))
-        // let responseJsonRandomFetch = responseJson["businesses"].filter(rest => {
-        //   (responseJson["businesses"].indexOf(rest) === 1 || responseJson["businesses"].indexOf(rest) === 3 || responseJson["businesses"].indexOf(rest) === 5 || responseJson["businesses"].indexOf(rest) === 10 || responseJson["businesses"].indexOf(rest) === 11 || responseJson["businesses"].indexOf(rest) === 13 || responseJson["businesses"].indexOf(rest) === 4 || responseJson["businesses"].indexOf(rest) === 23 || responseJson.indexOf(rest) === 26 || responseJson.indexOf(rest) === 27)
-        // })
+        let responseJsonRandom = responseJson["businesses"].slice()
+        for (var i = responseJsonRandom.length - 1; i > 0; i-- ) {
+          let j = Math.floor(Math.random() * (i + 1));
+          [responseJsonRandom[i], responseJsonRandom[j]] = [responseJsonRandom[j], responseJsonRandom[i]];
+        }
+
+        let responseJsonRandomFetch = responseJsonRandom.slice()
         responseJsonRandomFetch.forEach(rest => {
           fetch(('https://api.yelp.com/v3/businesses/' + rest.id), {
             headers: {
@@ -111,24 +114,25 @@ export default class SwipeView extends React.Component {
             }
           })
             .then((response) => response.json())
-              .then((responseJson) => {
-                if (responseJson["photos"]) {
-                  for (var i = 0; i < responseJson["photos"].length; i++) {
-                    restaurantPics.push({
-                      url: responseJson["photos"][i],
-                      rest: responseJson["id"]
-                    });
-                    let listOfPics = restaurantPics.slice()
-                    for (let i = listOfPics.length - 1; i > 0; i--) {
-                      let j = Math.floor(Math.random() * (i + 1));
-                      [listOfPics[i], listOfPics[j]] = [listOfPics[j], listOfPics[i]];
-                    }
-                    this.setState({ listOfRestaurantPics: listOfPics });
+            .then((responseJson) => {
+              if (responseJson["photos"]) {
+                for (var i = 0; i < responseJson["photos"].length; i++) {
+                  restaurantPics.push({
+                    url: responseJson["photos"][i],
+                    rest: responseJson["id"]
+                  });
+                  let listOfPics = restaurantPics.slice()
+                  for (let i = listOfPics.length - 1; i > 0; i--) {
+                    let j = Math.floor(Math.random() * (i + 1));
+                    [listOfPics[i], listOfPics[j]] = [listOfPics[j], listOfPics[i]];
                   }
+                  this.setState({ listOfRestaurantPics: listOfPics });
+                }
               }
             });
         });
-      })
+      });
+    });
   }
 
   handleYup(card) {
@@ -142,19 +146,19 @@ export default class SwipeView extends React.Component {
     } else {
       this.state.restaurantsLiked[card.rest] = 'liked'
       let newListOfPics = this.state.listOfRestaurantPics.slice()
-      newListOfPics = newListOfPics.filter(function( obj ) {
+      newListOfPics = newListOfPics.filter(function (obj) {
         return obj.url !== card.url;
       });
-      this.setState(Object.assign({}, this.state, {firstTime: false, listOfRestaurantPics: newListOfPics}))
+      this.setState(Object.assign({}, this.state, { firstTime: false, listOfRestaurantPics: newListOfPics }))
       this.state.firstTime = false
     }
   }
   handleNope(card) {
     let newListOfPics = this.state.listOfRestaurantPics.slice()
-    newListOfPics = newListOfPics.filter(function( obj ) {
+    newListOfPics = newListOfPics.filter(function (obj) {
       return obj.url !== card.url;
     });
-    this.setState(Object.assign({}, this.state, {firstTime: false, listOfRestaurantPics: newListOfPics}))
+    this.setState(Object.assign({}, this.state, { firstTime: false, listOfRestaurantPics: newListOfPics }))
     this.state.firstTime = false
   }
 
@@ -183,18 +187,18 @@ export default class SwipeView extends React.Component {
         <View style={styles.container}>
           {this.state && this.state.listOfRestaurantPics.length ?
             <View>
-            <View>              
-            <Text style={styles.textRight}>  Swipe right to like ⟶</Text>
-              <SwipeCards
-                cards={this.state.listOfRestaurantPics}
-                renderCard={(cardData) => <Card {...cardData} />}
-                renderNoMoreCards={() => <NoMoreCards />}
-                handleYup={this.handleYup}
-                handleNope={this.handleNope}
-              />
-            <Text style={styles.textLeft}>⟵ Swipe left to not   </Text>
+              <View>
+                <Text style={styles.textRight}>  Swipe right to like ⟶</Text>
+                <SwipeCards
+                  cards={this.state.listOfRestaurantPics}
+                  renderCard={(cardData) => <Card {...cardData} />}
+                  renderNoMoreCards={() => <NoMoreCards />}
+                  handleYup={this.handleYup}
+                  handleNope={this.handleNope}
+                />
+                <Text style={styles.textLeft}>⟵ Swipe left to not   </Text>
+              </View>
             </View>
-          </View>
             :
             <Text style={styles.text}>Fetching nearby food...</Text>
           }
