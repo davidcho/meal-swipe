@@ -30,13 +30,13 @@ class NoMoreCards extends React.Component {
     this.state = {
       swipeView: true,
     };
-    this.onPressHome = this.onPressHome.bind(this)
+    this.onPressHome = this.onPressHome.bind(this);
   }
 
   onPressHome = () => {
     this.setState({
       swipeView: false
-    })
+    });
   }
 
   render() {
@@ -52,11 +52,11 @@ class NoMoreCards extends React.Component {
             />
           </View>
         </View>
-      )
+      );
     } else {
       return (
         <Home />
-      )
+      );
     }
   }
 }
@@ -75,36 +75,38 @@ export default class SwipeView extends React.Component {
       latitude: "",
       longitude: ""
     };
-    this.handleYup = this.handleYup.bind(this)
-    this.handleNope = this.handleNope.bind(this)
-
+    this.handleYup = this.handleYup.bind(this);
+    this.handleNope = this.handleNope.bind(this);
   }
 
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        console.log(position)
-        let latitude = position.coords.latitude
-        let longitude = position.coords.longitude
-        let restaurantPics = []
-        let key = config.MY_KEY
-        fetch('https://api.yelp.com/v3/businesses/search?term=restaurants&sort_by=rating&latitude=' + latitude + '&longitude=' + longitude + '&radius=1600&limit=30', {
-        method: 'GET',
-        headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: key
-        }
-        })
+        let latitude = position.coords.latitude;
+        let longitude = position.coords.longitude;
+        let restaurantPics = [];
+        let key = config.MY_KEY;
+        fetch(
+          'https://api.yelp.com/v3/businesses/search?term=restaurants&sort_by=rating&latitude=' + 
+            latitude + 
+            '&longitude=' + 
+            longitude + 
+            '&radius=1600&limit=30', {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: key,
+          }});
       .then((response) => response.json())
       .then((responseJson) => {
-        let responseJsonRandom = responseJson["businesses"].slice()
-        for (var i = responseJsonRandom.length - 1; i > 0; i-- ) {
+        let businesses = responseJson["businesses"].slice();
+        for (let i = businesses.length - 1; i > 0; i--) {
           let j = Math.floor(Math.random() * (i + 1));
-          [responseJsonRandom[i], responseJsonRandom[j]] = [responseJsonRandom[j], responseJsonRandom[i]];
+          [businesses[i], businesses[j]] = [businesses[j], businesses[i]];
         }
 
-        let responseJsonRandomFetch = responseJsonRandom.slice()
+        let responseJsonRandomFetch = businesses.slice();
         responseJsonRandomFetch.forEach(rest => {
           fetch(('https://api.yelp.com/v3/businesses/' + rest.id), {
             headers: {
@@ -119,9 +121,9 @@ export default class SwipeView extends React.Component {
                 for (var i = 0; i < responseJson["photos"].length; i++) {
                   restaurantPics.push({
                     url: responseJson["photos"][i],
-                    rest: responseJson["id"]
+                    rest: responseJson["id"],
                   });
-                  let listOfPics = restaurantPics.slice()
+                  let listOfPics = restaurantPics.slice();
                   for (let i = listOfPics.length - 1; i > 0; i--) {
                     let j = Math.floor(Math.random() * (i + 1));
                     [listOfPics[i], listOfPics[j]] = [listOfPics[j], listOfPics[i]];
@@ -137,12 +139,13 @@ export default class SwipeView extends React.Component {
 
   handleYup(card) {
     if (this.state.restaurantsLiked[card.rest]) {
-      restName = card.rest.split("-").join(" ")
-      restName = restName.slice(0, restName.length - 10)
+      // is this even being used?
+      let restName = card.rest.split("-").join(" ");
+      restName = restName.slice(0, restName.length - 10);
       this.setState({
         recommend: true,
         recommendRest: card.rest,
-      })
+      });
     } else {
       this.state.restaurantsLiked[card.rest] = 'liked'
       let newListOfPics = this.state.listOfRestaurantPics.slice()
